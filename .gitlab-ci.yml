@@ -13,6 +13,7 @@ before_script:
 decompile_framework:
   stage: decompile
   script:
+    - set -x
     # Fetch the latest version of JADX
     - JADX_LATEST_URL=$(curl -s https://api.github.com/repos/skylot/jadx/releases/latest | jq -r '.assets[] | select(.name | contains(".zip")).browser_download_url')
     - wget $JADX_LATEST_URL -O jadx.zip
