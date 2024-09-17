@@ -1,0 +1,68 @@
+stages:
+  - decompile
+  - push_decompiled
+
+variables:
+  GIT_STRATEGY: clone  # Ensure proper branch handling
+  BRANCH_NAME: "decompiled"  # Branch where decompiled content will be pushed
+
+before_script:
+  - apt-get update
+  - apt-get install -y wget unzip jq git curl
+
+decompile_framework:
+  stage: decompile
+  script:
+    # Fetch the latest version of JADX
+    - JADX_LATEST_URL=$(curl -s https://api.github.com/repos/skylot/jadx/releases/latest | jq -r '.assets[] | select(.name | contains(".zip")).browser_download_url')
+    - wget $JADX_LATEST_URL -O jadx.zip
+    - unzip jadx.zip -d jadx
+    - export PATH=$PATH:$CI_PROJECT_DIR/jadx/bin  # Add JADX to PATH
+
+    # Fetch the latest version of ApkTool
+    - APKTOOL_LATEST_URL=$(curl -s https://api.bitbucket.org/2.0/repositories/iBotPeaches/apktool/downloads | jq -r '.values[0].links.self.href')
+    - wget $APKTOOL_LATEST_URL -O apktool.jar
+
+    # Ensure framework.jar and framework-res.apk exist in the main branch
+    - if [ ! -f framework.jar ] || [ ! -f framework-res.apk ]; then echo "Required files not found!" && exit 1; fi
+
+    # Create directories for decompilation output
+    - mkdir -p decompiled/framework_jar
+    - mkdir -p decompiled/framework_res
+
+    # Decompile framework.jar using JADX
+    - jadx/bin/jadx framework.jar -d decompiled/framework_jar
+
+    # Decompile framework-res.apk using ApkTool
+    - java -jar apktool.jar d framework-res.apk -o decompiled/framework_res
+
+  artifacts:
+    paths:
+      - decompiled/
+    expire_in: 1 week
+
+push_decompiled:
+  stage: push_decompiled
+  script:
+    # Set up Git config
+    - git config --global user.email "ci@example.com"
+    - git config --global user.name "GitLab CI"
+
+    # Check if branch already exists, otherwise create it
+    - |
+      if git ls-remote --exit-code --heads origin $BRANCH_NAME; then
+        git checkout $BRANCH_NAME
+      else
+        git checkout -b $BRANCH_NAME
+      fi
+
+    # Copy decompiled files to the branch
+    - mkdir -p framework_jar_decompiled
+    - mkdir -p framework_res_decompiled
+    - cp -r decompiled/framework_jar/* framework_jar_decompiled/
+    - cp -r decompiled/framework_res/* framework_res_decompiled/
+
+    # Add, commit, and push the changes to the decompiled branch
+    - git add framework_jar_decompiled framework_res_decompiled
+    - git commit -m "Decompiled framework.jar and framework-res.apk"
+    - git push -u origin $BRANCH_NAME
