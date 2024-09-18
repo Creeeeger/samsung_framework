@@ -1,0 +1,31 @@
+version: 2.9.3
+apkFileName: framework-res.apk
+isFrameworkApk: true
+usesFramework:
+  ids:
+  tag: null
+sdkInfo:
+  minSdkVersion: 34
+  targetSdkVersion: 34
+packageInfo:
+  forcedPackageId: 1
+  renameManifestPackage: null
+versionInfo:
+  versionCode: 34
+  versionName: 14
+resourcesAreCompressed: false
+sharedLibrary: false
+sparseResources: true
+unknownFiles:
+  SEC-INF/buildConfirm.crt: 8
+  SEC-INF/buildinfo.xml: 8
+doNotCompress:
+- resources.arsc
+- assets/geoid_height_map/tile-1.pb
+- assets/geoid_height_map/tile-3.pb
+- assets/geoid_height_map/tile-5.pb
+- assets/geoid_height_map/tile-7.pb
+- assets/geoid_height_map/tile-9.pb
+- assets/geoid_height_map/tile-b.pb
+- png
+- ogg
