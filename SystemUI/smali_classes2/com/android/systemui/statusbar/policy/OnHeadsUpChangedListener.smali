@@ -1,0 +1,33 @@
+.class public interface abstract Lcom/android/systemui/statusbar/policy/OnHeadsUpChangedListener;
+.super Ljava/lang/Object;
+.source "qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f"
+
+
+# virtual methods
+.method public onHeadsUpPinned(Lcom/android/systemui/statusbar/notification/collection/NotificationEntry;)V
+    .locals 0
+
+    .line 1
+    return-void
+.end method
+
+.method public onHeadsUpPinnedModeChanged(Z)V
+    .locals 0
+
+    .line 1
+    return-void
+.end method
+
+.method public onHeadsUpStateChanged(Lcom/android/systemui/statusbar/notification/collection/NotificationEntry;Z)V
+    .locals 0
+
+    .line 1
+    return-void
+.end method
+
+.method public onHeadsUpUnPinned(Lcom/android/systemui/statusbar/notification/collection/NotificationEntry;)V
+    .locals 0
+
+    .line 1
+    return-void
+.end method

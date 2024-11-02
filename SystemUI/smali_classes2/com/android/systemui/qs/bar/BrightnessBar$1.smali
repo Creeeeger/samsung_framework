@@ -1,0 +1,358 @@
+.class public final Lcom/android/systemui/qs/bar/BrightnessBar$1;
+.super Ljava/lang/Object;
+.source "qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f"
+
+# interfaces
+.implements Lcom/android/systemui/qs/QSBackupRestoreManager$Callback;
+
+
+# instance fields
+.field public final synthetic this$0:Lcom/android/systemui/qs/bar/BrightnessBar;
+
+
+# direct methods
+.method public constructor <init>(Lcom/android/systemui/qs/bar/BrightnessBar;)V
+    .locals 0
+
+    .line 1
+    iput-object p1, p0, Lcom/android/systemui/qs/bar/BrightnessBar$1;->this$0:Lcom/android/systemui/qs/bar/BrightnessBar;
+
+    .line 2
+    .line 3
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+
+    .line 4
+    .line 5
+    .line 6
+    return-void
+.end method
+
+
+# virtual methods
+.method public final isValidDB()Z
+    .locals 4
+
+    .line 1
+    iget-object p0, p0, Lcom/android/systemui/qs/bar/BrightnessBar$1;->this$0:Lcom/android/systemui/qs/bar/BrightnessBar;
+
+    .line 2
+    .line 3
+    iget-object p0, p0, Lcom/android/systemui/qs/bar/BrightnessBar;->mTunerService:Lcom/android/systemui/tuner/TunerService;
+
+    .line 4
+    .line 5
+    const/4 v0, 0x1
+
+    .line 6
+    const-string v1, "brightness_on_top"
+
+    .line 7
+    .line 8
+    invoke-virtual {p0, v0, v1}, Lcom/android/systemui/tuner/TunerService;->getValue(ILjava/lang/String;)I
+
+    .line 9
+    .line 10
+    .line 11
+    move-result p0
+
+    .line 12
+    if-eqz p0, :cond_0
+
+    .line 13
+    .line 14
+    if-eq p0, v0, :cond_0
+
+    .line 15
+    .line 16
+    const/4 v0, 0x0
+
+    .line 17
+    :cond_0
+    const-string v1, "brightnessOnTop : "
+
+    .line 18
+    .line 19
+    const-string v2, " valid : "
+
+    .line 20
+    .line 21
+    const-string v3, "BrightnessOnTop"
+
+    .line 22
+    .line 23
+    invoke-static {v1, p0, v2, v0, v3}, Lcom/android/keyguard/KeyguardSecSecurityContainerController$$ExternalSyntheticOutline0;->m(Ljava/lang/String;ILjava/lang/String;ZLjava/lang/String;)V
+
+    .line 24
+    .line 25
+    .line 26
+    return v0
+.end method
+
+.method public final onBackup(Z)Ljava/lang/String;
+    .locals 2
+
+    .line 1
+    new-instance v0, Ljava/lang/StringBuilder;
+
+    .line 2
+    .line 3
+    const-string v1, "TAG::brightness_on_top::"
+
+    .line 4
+    .line 5
+    invoke-direct {v0, v1}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+
+    .line 6
+    .line 7
+    .line 8
+    iget-object p0, p0, Lcom/android/systemui/qs/bar/BrightnessBar$1;->this$0:Lcom/android/systemui/qs/bar/BrightnessBar;
+
+    .line 9
+    .line 10
+    const-string v1, "0"
+
+    .line 11
+    .line 12
+    if-eqz p1, :cond_1
+
+    .line 13
+    .line 14
+    iget-object p0, p0, Lcom/android/systemui/qs/bar/BrightnessBar;->mTunerService:Lcom/android/systemui/tuner/TunerService;
+
+    .line 15
+    .line 16
+    const-string p1, "brightness_on_top"
+
+    .line 17
+    .line 18
+    invoke-virtual {p0, p1}, Lcom/android/systemui/tuner/TunerService;->getValue(Ljava/lang/String;)Ljava/lang/String;
+
+    .line 19
+    .line 20
+    .line 21
+    move-result-object p0
+
+    .line 22
+    if-nez p0, :cond_0
+
+    .line 23
+    .line 24
+    goto :goto_0
+
+    .line 25
+    :cond_0
+    move-object v1, p0
+
+    .line 26
+    :goto_0
+    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    .line 27
+    .line 28
+    .line 29
+    goto :goto_1
+
+    .line 30
+    :cond_1
+    invoke-virtual {p0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 31
+    .line 32
+    .line 33
+    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    .line 34
+    .line 35
+    .line 36
+    :goto_1
+    new-instance p0, Ljava/lang/StringBuilder;
+
+    .line 37
+    .line 38
+    const-string p1, "builder : "
+
+    .line 39
+    .line 40
+    invoke-direct {p0, p1}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+
+    .line 41
+    .line 42
+    .line 43
+    invoke-virtual {p0, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+
+    .line 44
+    .line 45
+    .line 46
+    invoke-virtual {p0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    .line 47
+    .line 48
+    .line 49
+    move-result-object p0
+
+    .line 50
+    const-string p1, "BrightnessOnTop"
+
+    .line 51
+    .line 52
+    invoke-static {p1, p0}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 53
+    .line 54
+    .line 55
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    .line 56
+    .line 57
+    .line 58
+    move-result-object p0
+
+    .line 59
+    return-object p0
+.end method
+
+.method public final onRestore(Ljava/lang/String;)V
+    .locals 5
+
+    .line 1
+    iget-object p0, p0, Lcom/android/systemui/qs/bar/BrightnessBar$1;->this$0:Lcom/android/systemui/qs/bar/BrightnessBar;
+
+    .line 2
+    .line 3
+    invoke-virtual {p0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 4
+    .line 5
+    .line 6
+    const-string v0, "::"
+
+    .line 7
+    .line 8
+    invoke-virtual {p1, v0}, Ljava/lang/String;->split(Ljava/lang/String;)[Ljava/lang/String;
+
+    .line 9
+    .line 10
+    .line 11
+    move-result-object p1
+
+    .line 12
+    const/4 v0, 0x0
+
+    .line 13
+    aget-object v1, p1, v0
+
+    .line 14
+    .line 15
+    const-string v2, "brightness_on_top"
+
+    .line 16
+    .line 17
+    invoke-virtual {v1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    .line 18
+    .line 19
+    .line 20
+    move-result v1
+
+    .line 21
+    if-eqz v1, :cond_1
+
+    .line 22
+    .line 23
+    const/4 v1, 0x1
+
+    .line 24
+    aget-object v3, p1, v1
+
+    .line 25
+    .line 26
+    invoke-static {v3}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
+
+    .line 27
+    .line 28
+    .line 29
+    move-result v3
+
+    .line 30
+    if-ne v3, v1, :cond_0
+
+    .line 31
+    .line 32
+    move v0, v1
+
+    .line 33
+    :cond_0
+    const-string v3, "isAllowedOnTop : "
+
+    .line 34
+    .line 35
+    const-string v4, "   Integer.parseInt(sp[1]) : "
+
+    .line 36
+    .line 37
+    invoke-static {v3, v0, v4}, Landroidx/slice/widget/RowView$$ExternalSyntheticOutline0;->m(Ljava/lang/String;ZLjava/lang/String;)Ljava/lang/StringBuilder;
+
+    .line 38
+    .line 39
+    .line 40
+    move-result-object v3
+
+    .line 41
+    aget-object p1, p1, v1
+
+    .line 42
+    .line 43
+    invoke-static {p1}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
+
+    .line 44
+    .line 45
+    .line 46
+    move-result p1
+
+    .line 47
+    invoke-virtual {v3, p1}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    .line 48
+    .line 49
+    .line 50
+    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    .line 51
+    .line 52
+    .line 53
+    move-result-object p1
+
+    .line 54
+    const-string v1, "BrightnessOnTop"
+
+    .line 55
+    .line 56
+    invoke-static {v1, p1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 57
+    .line 58
+    .line 59
+    iget-boolean p1, p0, Lcom/android/systemui/qs/bar/BrightnessBar;->mIsAllowedOnTop:Z
+
+    .line 60
+    .line 61
+    if-eq p1, v0, :cond_1
+
+    .line 62
+    .line 63
+    iput-boolean v0, p0, Lcom/android/systemui/qs/bar/BrightnessBar;->mIsAllowedOnTop:Z
+
+    .line 64
+    .line 65
+    iget-object p0, p0, Lcom/android/systemui/qs/bar/BrightnessBar;->mTunerService:Lcom/android/systemui/tuner/TunerService;
+
+    .line 66
+    .line 67
+    invoke-virtual {p0, v0, v2}, Lcom/android/systemui/tuner/TunerService;->setValue(ILjava/lang/String;)V
+
+    .line 68
+    .line 69
+    .line 70
+    :cond_1
+    return-void
+.end method

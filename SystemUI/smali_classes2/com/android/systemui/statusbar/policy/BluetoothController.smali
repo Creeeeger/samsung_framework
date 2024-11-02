@@ -1,0 +1,18 @@
+.class public interface abstract Lcom/android/systemui/statusbar/policy/BluetoothController;
+.super Ljava/lang/Object;
+.source "qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f"
+
+# interfaces
+.implements Lcom/android/systemui/statusbar/policy/CallbackController;
+.implements Lcom/android/systemui/Dumpable;
+
+
+# virtual methods
+.method public abstract getBluetoothState()I
+.end method
+
+.method public abstract isBluetoothEnabled()Z
+.end method
+
+.method public abstract setBluetoothEnabled(Z)V
+.end method

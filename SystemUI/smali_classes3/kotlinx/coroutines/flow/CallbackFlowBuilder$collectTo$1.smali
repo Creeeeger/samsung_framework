@@ -1,0 +1,101 @@
+.class final Lkotlinx/coroutines/flow/CallbackFlowBuilder$collectTo$1;
+.super Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.source "qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f"
+
+
+# annotations
+.annotation runtime Lkotlin/coroutines/jvm/internal/DebugMetadata;
+    c = "kotlinx.coroutines.flow.CallbackFlowBuilder"
+    f = "Builders.kt"
+    l = {
+        0x150
+    }
+    m = "collectTo"
+.end annotation
+
+
+# instance fields
+.field L$0:Ljava/lang/Object;
+
+.field label:I
+
+.field synthetic result:Ljava/lang/Object;
+
+.field final synthetic this$0:Lkotlinx/coroutines/flow/CallbackFlowBuilder;
+    .annotation system Ldalvik/annotation/Signature;
+        value = {
+            "Lkotlinx/coroutines/flow/CallbackFlowBuilder;"
+        }
+    .end annotation
+.end field
+
+
+# direct methods
+.method public constructor <init>(Lkotlinx/coroutines/flow/CallbackFlowBuilder;Lkotlin/coroutines/Continuation;)V
+    .locals 0
+    .annotation system Ldalvik/annotation/Signature;
+        value = {
+            "(",
+            "Lkotlinx/coroutines/flow/CallbackFlowBuilder;",
+            "Lkotlin/coroutines/Continuation<",
+            "-",
+            "Lkotlinx/coroutines/flow/CallbackFlowBuilder$collectTo$1;",
+            ">;)V"
+        }
+    .end annotation
+
+    .line 1
+    iput-object p1, p0, Lkotlinx/coroutines/flow/CallbackFlowBuilder$collectTo$1;->this$0:Lkotlinx/coroutines/flow/CallbackFlowBuilder;
+
+    .line 2
+    .line 3
+    invoke-direct {p0, p2}, Lkotlin/coroutines/jvm/internal/ContinuationImpl;-><init>(Lkotlin/coroutines/Continuation;)V
+
+    .line 4
+    .line 5
+    .line 6
+    return-void
+.end method
+
+
+# virtual methods
+.method public final invokeSuspend(Ljava/lang/Object;)Ljava/lang/Object;
+    .locals 1
+
+    .line 1
+    iput-object p1, p0, Lkotlinx/coroutines/flow/CallbackFlowBuilder$collectTo$1;->result:Ljava/lang/Object;
+
+    .line 2
+    .line 3
+    iget p1, p0, Lkotlinx/coroutines/flow/CallbackFlowBuilder$collectTo$1;->label:I
+
+    .line 4
+    .line 5
+    const/high16 v0, -0x80000000
+
+    .line 6
+    .line 7
+    or-int/2addr p1, v0
+
+    .line 8
+    iput p1, p0, Lkotlinx/coroutines/flow/CallbackFlowBuilder$collectTo$1;->label:I
+
+    .line 9
+    .line 10
+    iget-object p1, p0, Lkotlinx/coroutines/flow/CallbackFlowBuilder$collectTo$1;->this$0:Lkotlinx/coroutines/flow/CallbackFlowBuilder;
+
+    .line 11
+    .line 12
+    const/4 v0, 0x0
+
+    .line 13
+    invoke-virtual {p1, v0, p0}, Lkotlinx/coroutines/flow/CallbackFlowBuilder;->collectTo(Lkotlinx/coroutines/channels/ProducerScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+
+    .line 14
+    .line 15
+    .line 16
+    move-result-object p0
+
+    .line 17
+    return-object p0
+.end method

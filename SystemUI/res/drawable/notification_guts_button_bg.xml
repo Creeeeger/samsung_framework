@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple android:color="@color/notification_panel_theme_ripple_color"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/mask">
+        <inset android:insetLeft="@android:dimen/back_progress_non_linear_factor" android:insetRight="@android:dimen/back_progress_non_linear_factor" android:insetTop="@android:dimen/back_progress_non_linear_factor" android:insetBottom="@android:dimen/back_progress_non_linear_factor">
+            <shape>
+                <corners android:radius="@dimen/notification_panel_background_radius" />
+                <solid android:color="@android:color/white" />
+            </shape>
+        </inset>
+    </item>
+</ripple>

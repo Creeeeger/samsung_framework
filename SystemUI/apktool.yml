@@ -1,0 +1,99 @@
+version: v2.10.0-10-b49e7708-SNAPSHOT
+apkFileName: SystemUI.apk
+isFrameworkApk: false
+usesFramework:
+  ids:
+  - 1
+  tag: null
+sdkInfo:
+  minSdkVersion: 34
+  targetSdkVersion: 34
+packageInfo:
+  forcedPackageId: 127
+  renameManifestPackage: null
+versionInfo:
+  versionCode: 34
+  versionName: 14
+sharedLibrary: false
+sparseResources: false
+compactEntries: false
+doNotCompress:
+- arsc
+- dex
+- ogg
+- png
+- webp
+- META-INF/androidx.activity_activity-ktx.version
+- META-INF/androidx.activity_activity.version
+- META-INF/androidx.annotation_annotation-experimental.version
+- META-INF/androidx.appcompat_appcompat-resources.version
+- META-INF/androidx.appcompat_appcompat.version
+- META-INF/androidx.apppickerview_apppickerview.version
+- META-INF/androidx.arch.core_core-runtime.version
+- META-INF/androidx.asynclayoutinflater_asynclayoutinflater.version
+- META-INF/androidx.cardview_cardview.version
+- META-INF/androidx.coordinatorlayout_coordinatorlayout.version
+- META-INF/androidx.core-ktx_core-ktx.version
+- META-INF/androidx.core_core-animation.version
+- META-INF/androidx.core_core-ktx.version
+- META-INF/androidx.core_core.version
+- META-INF/androidx.cursoradapter_cursoradapter.version
+- META-INF/androidx.customview_customview.version
+- META-INF/androidx.drawerlayout_drawerlayout.version
+- META-INF/androidx.dynamicanimation_dynamicanimation.version
+- META-INF/androidx.emoji2_emoji2-views-helper.version
+- META-INF/androidx.emoji2_emoji2.version
+- META-INF/androidx.exifinterface_exifinterface.version
+- META-INF/androidx.fragment-ktx_fragment-ktx.version
+- META-INF/androidx.fragment_fragment.version
+- META-INF/androidx.interpolator_interpolator.version
+- META-INF/androidx.leanback_leanback.version
+- META-INF/androidx.legacy_legacy-preference-v14.version
+- META-INF/androidx.legacy_legacy-support-v4.version
+- META-INF/androidx.lifecycle_lifecycle-livedata-core-ktx.version
+- META-INF/androidx.lifecycle_lifecycle-livedata-core.version
+- META-INF/androidx.lifecycle_lifecycle-livedata.version
+- META-INF/androidx.lifecycle_lifecycle-process.version
+- META-INF/androidx.lifecycle_lifecycle-runtime-ktx.version
+- META-INF/androidx.lifecycle_lifecycle-runtime.version
+- META-INF/androidx.lifecycle_lifecycle-service.version
+- META-INF/androidx.lifecycle_lifecycle-viewmodel-ktx.version
+- META-INF/androidx.lifecycle_lifecycle-viewmodel-savedstate.version
+- META-INF/androidx.lifecycle_lifecycle-viewmodel.version
+- META-INF/androidx.loader_loader.version
+- META-INF/androidx.localbroadcastmanager_localbroadcastmanager.version
+- META-INF/androidx.media_media.version
+- META-INF/androidx.mediarouter_mediarouter.version
+- META-INF/androidx.palette_palette.version
+- META-INF/androidx.picker_picker-app.version
+- META-INF/androidx.picker_picker-color.version
+- META-INF/androidx.preference_preference.version
+- META-INF/androidx.recyclerview_recyclerview.version
+- META-INF/androidx.remotecallback_remotecallback.version
+- META-INF/androidx.room_room-runtime.version
+- META-INF/androidx.savedstate_savedstate.version
+- META-INF/androidx.slice_slice-builders.version
+- META-INF/androidx.slice_slice-core.version
+- META-INF/androidx.slice_slice-view.version
+- META-INF/androidx.slidingpanelayout_slidingpanelayout.version
+- META-INF/androidx.sqlite_sqlite-framework.version
+- META-INF/androidx.sqlite_sqlite.version
+- META-INF/androidx.startup_startup-runtime.version
+- META-INF/androidx.transition_transition.version
+- META-INF/androidx.vectordrawable_vectordrawable-animated.version
+- META-INF/androidx.vectordrawable_vectordrawable.version
+- META-INF/androidx.versionedparcelable_versionedparcelable.version
+- META-INF/androidx.viewpager2_viewpager2.version
+- META-INF/androidx.viewpager_viewpager.version
+- META-INF/com.google.android.material_material.version
+- META-INF/external__kotlinx.coroutines__android_common__kotlinx_coroutines_android.kotlin_module
+- META-INF/frameworks__base__libs__dream__lowlight__android_common__LowLightDreamLib.kotlin_module
+- META-INF/frameworks__base__packages__SettingsLib__DeviceStateRotationLock__android_common__SettingsLibDeviceStateRotationLock.kotlin_module
+- META-INF/frameworks__base__packages__SettingsLib__android_common__SeslSettingsLib.kotlin_module
+- META-INF/frameworks__base__packages__SystemUI__animation__android_common__SystemUIShaderLib.kotlin_module
+- META-INF/frameworks__base__packages__SystemUI__common__android_common__SystemUICommon.kotlin_module
+- META-INF/frameworks__base__packages__SystemUI__monet__android_common__monet.kotlin_module
+- META-INF/frameworks__libs__systemui__motiontoollib__android_common__motion_tool_lib.kotlin_module
+- META-INF/services/kotlinx.coroutines.CoroutineExceptionHandler
+- META-INF/services/kotlinx.coroutines.internal.MainDispatcherFactory
+- res/raw/edge_lighting_settings.json
